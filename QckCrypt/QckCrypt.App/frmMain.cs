@@ -1,9 +1,11 @@
 ﻿using MetroFramework.Forms;
+using QckCrypt.Library;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,18 +24,44 @@ namespace QckCrypt.App
         {
             dragList.DocumentIcon = Properties.Resources.DocumentIcon;
             dragList.FolderIcon = Properties.Resources.FolderIcon;
-            dragList.CheckedIcon = Properties.Resources.CheckedIcon;
-
-            dragList.AddItem(new ListItem("PNG", "C:/Pictures/test.png", ListItemType.File, CryptStatus.Unencrypted));
-            dragList.AddItem(new ListItem("DIR", "C:/RuneScape/CheatsthisWWWWWlikelywillneverbeinthisapplikewhothefucknamehisdirslikethiasdfdasfass", ListItemType.Folder, CryptStatus.Unencrypted));
-            dragList.AddItem(new ListItem("DIR", "C:/RuneScape/Cheats", ListItemType.Folder, CryptStatus.Unencrypted));
-            dragList.AddItem(new ListItem("DIR", "C:/RuneScape/CheatsthisWWWWWlikelywillneverbeinthisapplikewhothefucknamehisdirslikethiasdfdasfass", ListItemType.Folder, CryptStatus.Unencrypted));
+            dragList.CheckedIcon = Properties.Resources.CheckedIcon; 
         }
 
-        private void metroButton1_Click(object sender, EventArgs e)
+        private void dragList_DragEnter(object sender, DragEventArgs e)
         {
-            dragList.ItemAt(1).Status = CryptStatus.Encrypted;
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
+                e.Effect = DragDropEffects.All;
+            else
+                e.Effect = DragDropEffects.None;
+        }
 
+        private void dragList_DragDrop(object sender, DragEventArgs e)
+        {
+            List<string> filepaths = new List<string>();
+            foreach (var s in (string[])e.Data.GetData(DataFormats.FileDrop, false))
+            {
+                if (Directory.Exists(s))
+                {
+                    dragList.AddItem(new ListItem("DIR", s, ListItemType.Folder, CryptStatus.Unencrypted));
+                }
+                else if (File.Exists(s))
+                {
+                    dragList.AddItem(new ListItem(GetExtension(s), s, ListItemType.File, CryptStatus.Unencrypted));
+                }
+                else MessageBox.Show("???");
+            }     
+        }
+
+        private string GetExtension(string fileName)
+        {
+            string extension;
+
+            extension = fileName.Split('.')[fileName.Split('.').Length - 1].ToUpper();
+
+            if (extension.Length > 3)
+                extension = extension.Substring(0, 3) + "..";
+
+            return extension;
         }
     }
 }

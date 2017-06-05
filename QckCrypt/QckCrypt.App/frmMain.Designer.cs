@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
             this.dragList = new QckCrypt.App.MetroDragList();
-            this.metroButton1 = new MetroFramework.Controls.MetroButton();
             this.SuspendLayout();
             // 
             // metroLabel1
@@ -45,30 +45,24 @@
             // 
             // dragList
             // 
-            this.dragList.Location = new System.Drawing.Point(23, 103);
+            this.dragList.AllowDrop = true;
+            this.dragList.CheckedIcon = ((System.Drawing.Bitmap)(resources.GetObject("dragList.CheckedIcon")));
+            this.dragList.DocumentIcon = ((System.Drawing.Bitmap)(resources.GetObject("dragList.DocumentIcon")));
+            this.dragList.FolderIcon = ((System.Drawing.Bitmap)(resources.GetObject("dragList.FolderIcon")));
+            this.dragList.Location = new System.Drawing.Point(23, 97);
             this.dragList.Name = "dragList";
-            this.dragList.Size = new System.Drawing.Size(531, 368);
+            this.dragList.Size = new System.Drawing.Size(531, 374);
             this.dragList.TabIndex = 1;
             this.dragList.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.dragList.UseSelectable = true;
-            // 
-            // metroButton1
-            // 
-            this.metroButton1.Location = new System.Drawing.Point(327, 40);
-            this.metroButton1.Name = "metroButton1";
-            this.metroButton1.Size = new System.Drawing.Size(213, 28);
-            this.metroButton1.TabIndex = 2;
-            this.metroButton1.Text = "This happens when it gets encrypted";
-            this.metroButton1.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this.metroButton1.UseSelectable = true;
-            this.metroButton1.Click += new System.EventHandler(this.metroButton1_Click);
+            this.dragList.DragDrop += new System.Windows.Forms.DragEventHandler(this.dragList_DragDrop);
+            this.dragList.DragEnter += new System.Windows.Forms.DragEventHandler(this.dragList_DragEnter);
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(577, 494);
-            this.Controls.Add(this.metroButton1);
             this.Controls.Add(this.dragList);
             this.Controls.Add(this.metroLabel1);
             this.Name = "frmMain";
@@ -86,7 +80,6 @@
 
         private MetroFramework.Controls.MetroLabel metroLabel1;
         private MetroDragList dragList;
-        private MetroFramework.Controls.MetroButton metroButton1;
     }
 }
 
