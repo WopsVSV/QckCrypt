@@ -20,6 +20,19 @@ namespace QckCrypt.App
 
         private void frmMain_Load(object sender, EventArgs e)
         {
+            dragList.DocumentIcon = Properties.Resources.DocumentIcon;
+            dragList.FolderIcon = Properties.Resources.FolderIcon;
+            dragList.CheckedIcon = Properties.Resources.CheckedIcon;
+
+            dragList.AddItem(new ListItem("PNG", "C:/Pictures/test.png", ListItemType.File, CryptStatus.Unencrypted));
+            dragList.AddItem(new ListItem("DIR", "C:/RuneScape/CheatsthisWWWWWlikelywillneverbeinthisapplikewhothefucknamehisdirslikethiasdfdasfass", ListItemType.Folder, CryptStatus.Unencrypted));
+            dragList.AddItem(new ListItem("DIR", "C:/RuneScape/Cheats", ListItemType.Folder, CryptStatus.Unencrypted));
+            dragList.AddItem(new ListItem("DIR", "C:/RuneScape/CheatsthisWWWWWlikelywillneverbeinthisapplikewhothefucknamehisdirslikethiasdfdasfass", ListItemType.Folder, CryptStatus.Unencrypted));
+        }
+
+        private void metroButton1_Click(object sender, EventArgs e)
+        {
+            dragList.ItemAt(1).Status = CryptStatus.Encrypted;
 
         }
     }
