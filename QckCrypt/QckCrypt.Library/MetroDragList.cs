@@ -1,29 +1,33 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
+﻿using MetroFramework;
 using MetroFramework.Controls;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
-using MetroFramework;
-using QckCrypt.Library;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
-namespace QckCrypt.App
+namespace QckCrypt.Library
 {
-   
+    /// <summary>
+    /// The very hardcoded drag list
+    /// </summary>
     public class MetroDragList : MetroUserControl
     {
         private const int ItemHeight = 48;
         private const int Name_X = 54;
-        private const int Path_X = 100;
+        private const int Path_X = 124;
 
-        private Pen BorderPen       = new Pen(Color.FromArgb(60, 60, 60), 0.85f);
-        private Pen ItemBorderPen   = new Pen(Color.FromArgb(25, 25, 25), 0.6f);
-        private Font ExtensionFont  = new Font("Consolas", 10, FontStyle.Regular);
-        private Font PathFont       = new Font("Consolas", 8, FontStyle.Regular);
+        private Pen BorderPen = new Pen(Color.FromArgb(60, 60, 60), 0.85f);
+        private Pen ItemBorderPen = new Pen(Color.FromArgb(25, 25, 25), 0.6f);
+        private Font ExtensionFont = new Font("Consolas", 10, FontStyle.Regular);
+        private Font PathFont = new Font("Consolas", 8, FontStyle.Regular);
 
         /// <summary>
         /// List which contains all items
         /// </summary>
-        private List<ListItem> Items { get; set; }
+        public List<ListItem> Items { get; set; }
         public List<MetroProgressSpinner> Spinners { get; private set; }
 
         /// <summary>
@@ -31,8 +35,9 @@ namespace QckCrypt.App
         /// </summary>
         private Bitmap DefaultBitmap = new Bitmap(32, 32);
         public Bitmap FolderIcon { get; set; }
-        public Bitmap DocumentIcon { get; set; } 
+        public Bitmap DocumentIcon { get; set; }
         public Bitmap CheckedIcon { get; set; }
+        public Bitmap ErrorIcon { get; set; }
 
         /// <summary>
         /// Constructor for the drag list
@@ -47,6 +52,7 @@ namespace QckCrypt.App
             FolderIcon = DefaultBitmap;
             CheckedIcon = DefaultBitmap;
             DocumentIcon = DefaultBitmap;
+            ErrorIcon = DefaultBitmap;
         }
 
         /// <summary>
@@ -55,7 +61,7 @@ namespace QckCrypt.App
         protected override void OnPaint(PaintEventArgs e)
         {
             // Draws the item
-            for(int i = 0; i < Items.Count; i++)
+            for (int i = 0; i < Items.Count; i++)
             {
                 // Border
                 e.Graphics.DrawRectangle(ItemBorderPen, 0, i * ItemHeight, Width - 1, ItemHeight);
@@ -70,11 +76,13 @@ namespace QckCrypt.App
                 e.Graphics.DrawString(Items[i].Extension, ExtensionFont, Brushes.DarkGray, Name_X, (i * ItemHeight) + 16);
 
                 // Path
-                e.Graphics.DrawString(Items[i].Path, PathFont, Brushes.Gray, Path_X, (i * ItemHeight) + 18);
+                e.Graphics.DrawString(Items[i].VirtualPath, PathFont, Brushes.Gray, Path_X, (i * ItemHeight) + 18);
 
                 // Status icon
-                if (Items[i].Status == CryptStatus.Encrypted)
-                    e.Graphics.DrawImage(CheckedIcon, Width - 48, (i * ItemHeight) + 8, 32,32);
+                if (Items[i].Status == CryptStatus.Done)
+                    e.Graphics.DrawImage(CheckedIcon, Width - 48, (i * ItemHeight) + 8, 32, 32);
+                else if(Items[i].Status == CryptStatus.Error)
+                    e.Graphics.DrawImage(ErrorIcon, Width - 48, (i * ItemHeight) + 8, 32, 32);
             }
 
             // Draws the border
@@ -89,16 +97,16 @@ namespace QckCrypt.App
         /// <param name="item"></param>
         public void AddItem(ListItem item)
         {
-            // Trim length if case
-            if (item.Path.Length > (Width - 180) / 6)
-                item.Path = item.Path.Substring(0, (Width - 180) / 6) + "...";
+            // Trim length if case (I know this is hardcoded and very bad but I'm too lazy to solve this right now)
+            if (item.Path.Length > (Width - 204) / 6)
+                item.VirtualPath = item.Path.Substring(0, (Width - 204) / 6) + "...";
 
             // Add item
             Items.Add(item);
 
             // Add spinner
             AddSpinner(Items.Count - 1);
-            
+
             Invalidate();
         }
 
@@ -136,6 +144,5 @@ namespace QckCrypt.App
 
             base.OnInvalidated(e);
         }
-
     }
 }
